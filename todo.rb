@@ -1,3 +1,24 @@
+# Modules
+
+module Menu
+  def menu
+    "Welcome! Please choose an action:
+    1) Add
+    2) Show
+    Q) Quit"
+  end
+  def show
+    menu
+  end
+end
+
+module Promptable
+  def prompt(message="What would you like to do?", symbol=":> ")
+    puts message 
+    print symbol
+    gets.chomp
+  end
+end
 # Classes
 
 class List
@@ -27,11 +48,19 @@ class Task
 end
 
 if __FILE__ == $PROGRAM_NAME
+  include Menu
+  include Promptable
   list_1 = List.new
-  puts "New list created!"
-  list_1.add(Task.new("Walk the dog."))
-  list_1.add(Task.new("Walk the cat."))
-  list_1.add(Task.new("Walk the bear."))
-  puts "You've added 3 tasks to the list!"
-  list_1.show_tasks
+  puts "Please choose an option from this menu."
+  until ['q'].include?(user_input = prompt(show).downcase)
+    case user_input
+    when "1"
+      list_1.add(Task.new(prompt("What is your new task?")))
+    when "2"
+      list_1.show_tasks
+    else
+      puts "I'm sorry, that is an invalid command."
+    end
+  end
+  puts "Thanks for using the task manager!"
 end
