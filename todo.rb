@@ -5,6 +5,7 @@ module Menu
     "Welcome! Please choose an action:
     1) Add
     2) Show
+    3) Write to File
     Q) Quit"
   end
   def show
@@ -37,6 +38,9 @@ class List
   		puts task.description
   	end
   end
+  def write_to_file(filename)
+    IO.write(filename, @all_tasks.map(&:to_s).join("\n"))
+  end
 end
 
 class Task 
@@ -44,6 +48,9 @@ class Task
 
   def initialize(description)
     @description = description
+  end
+  def to_s
+    description
   end
 end
 
@@ -58,6 +65,8 @@ if __FILE__ == $PROGRAM_NAME
       list_1.add(Task.new(prompt("What is your new task?")))
     when "2"
       list_1.show_tasks
+    when "3"
+      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)")<<".txt")
     else
       puts "I'm sorry, that is an invalid command."
     end
