@@ -6,6 +6,7 @@ module Menu
     1) Add
     2) Show
     3) Write to File
+    4) Read from File
     Q) Quit"
   end
   def show
@@ -41,6 +42,9 @@ class List
   def write_to_file(filename)
     IO.write(filename, @all_tasks.map(&:to_s).join("\n"))
   end
+  def read_from_file(filename)
+    IO.read(filename)
+  end
 end
 
 class Task 
@@ -66,7 +70,9 @@ if __FILE__ == $PROGRAM_NAME
     when "2"
       list_1.show_tasks
     when "3"
-      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)")<<".txt")
+      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)") << ".txt")
+    when "4"
+      puts list_1.read_from_file(prompt("What file would you like to read? (_____.txt)") << ".txt")
     else
       puts "I'm sorry, that is an invalid command."
     end
