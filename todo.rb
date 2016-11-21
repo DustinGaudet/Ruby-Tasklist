@@ -43,7 +43,9 @@ class List
     IO.write(filename, @all_tasks.map(&:to_s).join("\n"))
   end
   def read_from_file(filename)
-    IO.read(filename)
+    IO.readlines(filename).each do |line|
+      add(Task.new(line.chomp))
+    end
   end
 end
 
