@@ -46,7 +46,7 @@ class List
   def update_task(number, updated_task)
     index = Integer(number) rescue false
     if index
-      @all_tasks[index - 1].description=updated_task
+      @all_tasks[index - 1] = updated_task
     else
       puts "That is not an integer."
     end
@@ -74,7 +74,7 @@ class List
 end
 
 class Task 
-  attr_accessor :description
+  attr_reader :description
 
   def initialize(description)
     @description = description
@@ -97,7 +97,7 @@ if __FILE__ == $PROGRAM_NAME
       list_1.show_tasks
     when "3"
       list_1.show_tasks
-      list_1.update_task(prompt("Please enter the number of the task to update."), prompt("Please enter the new task."))
+      list_1.update_task(prompt("Please enter the number of the task to update."), Task.new(prompt("What is your new task?")))
     when "4"
       list_1.show_tasks
       list_1.delete_task(prompt("Please enter the number of the task to delete. \n"))
