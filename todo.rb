@@ -43,8 +43,12 @@ class List
     IO.write(filename, @all_tasks.map(&:to_s).join("\n"))
   end
   def read_from_file(filename)
-    IO.readlines(filename).each do |line|
-      add(Task.new(line.chomp))
+    begin 
+      IO.readlines(filename).each do |line|
+        add(Task.new(line.chomp))
+      end
+    rescue Errno::ENOENT
+      "Sorry, this file doesn't exist."
     end
   end
 end
