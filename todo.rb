@@ -5,9 +5,10 @@ module Menu
     "Welcome! Please choose an action:
     1) Add
     2) Show
-    3) Delete
-    4) Write to File
-    5) Read from File
+    3) Update
+    4) Delete
+    5) Write to File
+    6) Read from File
     Q) Quit"
   end
   def show
@@ -37,10 +38,18 @@ class List
   end
   def show_tasks
     task_num = 1
-  	all_tasks.each do |task| 
-  		puts task_num.to_s << ") " << task.description
+    all_tasks.each do |task| 
+      puts task_num.to_s << ") " << task.description
       task_num += 1
-  	end
+    end
+  end
+  def update_task(number, updated_task)
+    index = Integer(number) rescue false
+    if index
+      @all_tasks[index - 1].description=updated_task
+    else
+      puts "That is not an integer."
+    end
   end
   def delete_task(number) 
     index = Integer(number) rescue false
@@ -65,7 +74,7 @@ class List
 end
 
 class Task 
-  attr_reader :description
+  attr_accessor :description
 
   def initialize(description)
     @description = description
@@ -88,10 +97,13 @@ if __FILE__ == $PROGRAM_NAME
       list_1.show_tasks
     when "3"
       list_1.show_tasks
-      list_1.delete_task(prompt("Please enter the number of the task to delete. \n"))
+      list_1.update_task(prompt("Please enter the number of the task to update."), prompt("Please enter the new task."))
     when "4"
-      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)") << ".txt")
+      list_1.show_tasks
+      list_1.delete_task(prompt("Please enter the number of the task to delete. \n"))
     when "5"
+      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)") << ".txt")
+    when "6"
       puts list_1.read_from_file(prompt("What file would you like to read? (_____.txt)") << ".txt")
     else
       puts "I'm sorry, that is an invalid command."
