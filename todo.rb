@@ -39,7 +39,7 @@ class List
   def show_tasks
     task_num = 1
     all_tasks.each do |task| 
-      puts task_num.to_s << ") " << task.description
+      puts task_num.to_s << ") " << task.to_s
       task_num += 1
     end
   end
@@ -60,12 +60,16 @@ class List
     end
   end
   def write_to_file(filename)
-    IO.write(filename, @all_tasks.map(&:to_s).join("\n"))
+    machine_format_list = @all_tasks.map(&:to_machine).join("\n")
+    IO.write(filename, machine_format_list)
   end
   def read_from_file(filename)
     begin 
       IO.readlines(filename).each do |line|
-        add(Task.new(line.chomp))
+        task_data = line.split(":")
+        task_status = task_data[0].include?("[√]") ? true : false
+        task_description = task_data[1].chomp
+        add(Task.new(task_description, task_status))
       end
     rescue Errno::ENOENT
       "Sorry, this file doesn't exist."
@@ -75,12 +79,27 @@ end
 
 class Task 
   attr_reader :description
+  attr_accessor :status
 
-  def initialize(description)
+  private
+  def initialize(description, status = false)
     @description = description
+    @status = status
   end
+  def represent_status
+    completed? === true ? "[√]" : "[ ]"
+  end
+  
+  public
+
   def to_s
-    description
+    "#{description} #{represent_status}"
+  end
+  def completed?
+    status 
+  end
+  def to_machine
+    "#{represent_status}:#{description}"
   end
 end
 
