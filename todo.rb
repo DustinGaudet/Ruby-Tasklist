@@ -5,8 +5,9 @@ module Menu
     "Welcome! Please choose an action:
     1) Add
     2) Show
-    3) Write to File
-    4) Read from File
+    3) Delete
+    4) Write to File
+    5) Read from File
     Q) Quit"
   end
   def show
@@ -35,9 +36,19 @@ class List
     all_tasks << task
   end
   def show_tasks
+    task_num = 1
   	all_tasks.each do |task| 
-  		puts task.description
+  		puts task_num.to_s << ") " << task.description
+      task_num += 1
   	end
+  end
+  def delete_task(number) 
+    index = Integer(number) rescue false
+    if index
+      @all_tasks.delete_at(index - 1)
+    else
+      puts "That is not an integer."
+    end
   end
   def write_to_file(filename)
     IO.write(filename, @all_tasks.map(&:to_s).join("\n"))
@@ -76,8 +87,11 @@ if __FILE__ == $PROGRAM_NAME
     when "2"
       list_1.show_tasks
     when "3"
-      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)") << ".txt")
+      list_1.show_tasks
+      list_1.delete_task(prompt("Please enter the number of the task to delete. \n"))
     when "4"
+      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)") << ".txt")
+    when "5"
       puts list_1.read_from_file(prompt("What file would you like to read? (_____.txt)") << ".txt")
     else
       puts "I'm sorry, that is an invalid command."
