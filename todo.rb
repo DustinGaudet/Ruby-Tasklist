@@ -7,8 +7,9 @@ module Menu
     2) Show
     3) Update
     4) Delete
-    5) Write to File
-    6) Read from File
+    5) Toggle Completion Status
+    6) Write to File
+    7) Read from File
     Q) Quit"
   end
   def show
@@ -59,6 +60,14 @@ class List
       puts "That is not an integer."
     end
   end
+  def toggle_status(number)
+    index = Integer(number) rescue false
+    if index
+      @all_tasks[index - 1].toggle_status
+    else
+      puts "That is not an integer."
+    end
+  end
   def write_to_file(filename)
     machine_format_list = @all_tasks.map(&:to_machine).join("\n")
     IO.write(filename, machine_format_list)
@@ -81,25 +90,27 @@ class Task
   attr_reader :description
   attr_accessor :status
 
-  private
   def initialize(description, status = false)
     @description = description
     @status = status
   end
-  def represent_status
-    completed? === true ? "[√]" : "[ ]"
-  end
-  
-  public
-
   def to_s
     "#{description} #{represent_status}"
   end
   def completed?
     status 
   end
+  def toggle_status
+    @status = !completed?
+  end
   def to_machine
     "#{represent_status}:#{description}"
+  end
+
+  private
+  
+  def represent_status
+    completed? === true ? "[√]" : "[ ]"
   end
 end
 
@@ -121,8 +132,11 @@ if __FILE__ == $PROGRAM_NAME
       list_1.show_tasks
       list_1.delete_task(prompt("Please enter the number of the task to delete. \n"))
     when "5"
-      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)") << ".txt")
+      list_1.show_tasks
+      list_1.toggle_status(prompt("Please enter the number of the task to toggle. \n"))
     when "6"
+      list_1.write_to_file(prompt("What should the file be called? (File will be appended with .txt)") << ".txt")
+    when "7"
       puts list_1.read_from_file(prompt("What file would you like to read? (_____.txt)") << ".txt")
     else
       puts "I'm sorry, that is an invalid command."
